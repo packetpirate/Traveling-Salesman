@@ -23,6 +23,10 @@ public class TourManager {
 		return cities.get(pos);
 	}
 	
+	public static void clearCities() {
+		cities.clear();
+	}
+	
 	public static int numberOfCities() {
 		return cities.size();
 	}

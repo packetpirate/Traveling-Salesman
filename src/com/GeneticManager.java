@@ -7,7 +7,7 @@ import com.population.Tour;
 public class GeneticManager {
 	private static final double mutationRate = 0.015;
     private static final int candidatesSize = 5;
-    private static final boolean elitism = true;
+    public static boolean elitism = true;
     
     public static Population evolve(Population pop) {
     	Population newPop = new Population(pop.size(), false);

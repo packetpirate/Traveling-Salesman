@@ -1,5 +1,7 @@
 package com.ui;
 
+import java.util.ArrayList;
+
 import com.GeneticManager;
 import com.population.City;
 import com.population.Population;
@@ -40,6 +42,7 @@ public class SalesmanUI {
 	private TextField generations = new TextField();
 	
 	private Tour fittest = null;
+	private boolean graphResults = false;
 	
 	public SalesmanUI(Stage stage) {
 		mStage = stage;
@@ -128,16 +131,26 @@ public class SalesmanUI {
 			properties.getChildren().addAll(generationsLabel, generations);
 			
 			CheckBox elitism = new CheckBox("Elitism?");
-			elitism.setSelected(true);
+			elitism.setSelected(GeneticManager.elitism);
+			elitism.selectedProperty().addListener((ov, old_val, new_val) -> {
+				GeneticManager.elitism = new_val;
+			});
 			VBox.setMargin(elitism, new Insets(5, 10, 5, 10));
 			CheckBox graph = new CheckBox("Graph Results?");
+			graph.selectedProperty().addListener((ov, old_val, new_val) -> {
+				graphResults = new_val;
+			});
 			VBox.setMargin(graph, new Insets(5, 10, 5, 10));
 			properties.getChildren().addAll(elitism, graph);
 			
 			Button runButton = new Button("Run");
 			VBox.setMargin(runButton, new Insets(15, 10, 5, 10));
 			runButton.setOnMouseClicked(runButtonHandler);
-			properties.getChildren().add(runButton);
+			
+			Button clearButton = new Button("Clear");
+			VBox.setMargin(clearButton, new Insets(5, 10, 5, 10));
+			clearButton.setOnMouseClicked(clearButtonHandler);
+			properties.getChildren().addAll(runButton, clearButton);
 		} // End setup of properties bar.
 	}
 	
@@ -148,11 +161,14 @@ public class SalesmanUI {
 	}
 	
 	EventHandler<MouseEvent> runButtonHandler = event -> {
+		ArrayList<Population> populations = new ArrayList<>();
 		Population pop = new Population(Integer.parseInt(popSize.getText()), true);
+		populations.add(pop);
 		int initDistance = pop.getFittest().getDistance();
 		
 		for(int i = 0; i < Integer.parseInt(generations.getText()); i++) {
         	pop = GeneticManager.evolve(pop);
+        	populations.add(pop);
         }
 		
 		fittest = pop.getFittest();
@@ -165,6 +181,15 @@ public class SalesmanUI {
 									   initDistance, endDistance);
 		alert.setContentText(content);
 		alert.showAndWait();
+		
+		if(graphResults) {
+			new PopulationGraph(populations);
+		}
+	};
+	
+	EventHandler<MouseEvent> clearButtonHandler = event -> {
+		TourManager.clearCities();
+		fittest = null;
 	};
 	
 	EventHandler<MouseEvent> mouseHandler = event -> {
@@ -173,9 +198,10 @@ public class SalesmanUI {
 	        sY = (int)(event.getY() / scale);
 		
 		// Toggle the city.
-		if(TourManager.cityExists(sX, sY)) {
-			TourManager.removeCity(sX, sY);
-			fittest = null;
-		} else TourManager.addCity(new City(sX, sY));
+		if(TourManager.cityExists(sX, sY)) TourManager.removeCity(sX, sY);
+		else TourManager.addCity(new City(sX, sY));
+		
+		// Our input has changed, so reset the fittest solution.
+		fittest = null;
 	};
 }
