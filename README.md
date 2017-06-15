@@ -7,7 +7,7 @@ The Traveling Salesman problem is a search problem in which, given a list of "ci
 I decided to use this as a learning project so I could implement a very basic genetic algorithm to familiarize myself with how they are structured. I went one step further and, using JavaFX, implemented a GUI to allow the user to add "cities" to the grid manually and then display the optimized path after the genetic algorithm has evolved the original population.
 
 ## Updates
- - THe user can now graph the results of the evolution process, showing the progress of the fittest member of each generation's distance. The data is displayed on a JavaFX LineChart generated in a separate window after the algorithm is run.
+ - The user can now graph the results of the evolution process, showing the progress of the fittest member of each generation's distance. The data is displayed on a JavaFX LineChart generated in a separate window after the algorithm is run.
  - All UI components now have relevant functionality implemented. A clear button has also been added to allow the user to easily clear all cities from the grid and reset the fittest solution.
 
 ## TODO
